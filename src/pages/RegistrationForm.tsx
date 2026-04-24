@@ -77,7 +77,7 @@ export default function RegistrationForm() {
     doc.text("BUKTI PENDAFTARAN SPMB", 105, 20, { align: "center" });
     doc.setFontSize(14);
     doc.setFont("helvetica", "normal");
-    doc.text(settings?.namaSekolah || "SDN Harapan Bangsa", 105, 30, { align: "center" });
+    doc.text(settings?.namaSekolah || "SD Negeri Kajulangko", 105, 30, { align: "center" });
 
     // Content
     doc.setTextColor(0, 0, 0);
