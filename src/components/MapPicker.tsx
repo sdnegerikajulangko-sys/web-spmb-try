@@ -34,7 +34,7 @@ function LocationMarker({ onLocationSelect, initialLocation }: MapPickerProps) {
 }
 
 export default function MapPicker({ onLocationSelect, initialLocation }: MapPickerProps) {
-  const defaultCenter = initialLocation || { lat: -6.200000, lng: 106.816666 };
+  const defaultCenter = initialLocation || { lat: -0.9146964, lng: 121.5858137 };
   const [center, setCenter] = useState<{lat: number, lng: number}>(defaultCenter);
   const [mapKey, setMapKey] = useState(0); // To force re-render MapContainer when center changes drastically
 
