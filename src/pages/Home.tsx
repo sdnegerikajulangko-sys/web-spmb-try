@@ -172,7 +172,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900">{settings?.namaKepalaSekolah || 'Kepala Sekolah'}</h4>
-                    <p className="text-sm text-slate-500">Kepala Sekolah {settings?.namaSekolah}</p>
+                    <p className="text-sm text-slate-500">Kepala {settings?.namaSekolah}</p>
                   </div>
                 </div>
               </div>
