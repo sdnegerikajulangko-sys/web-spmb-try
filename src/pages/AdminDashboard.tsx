@@ -682,10 +682,10 @@ export default function AdminDashboard() {
                         type="text"
                         value={localSettings.koordinatSekolah || ''}
                         onChange={e => setLocalSettings({...localSettings, koordinatSekolah: e.target.value})}
-                        placeholder="Contoh: -6.200000, 106.816666"
+                        placeholder="Contoh: -0.9146964, 121.5858137"
                         className={cn("w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500", isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-slate-300")}
                       />
-                      <p className="text-xs text-slate-500 mt-1">Gunakan format "Latitude, Longitude" (contoh: -6.200000, 106.816666). Digunakan untuk menghitung jarak rumah pendaftar ke sekolah.</p>
+                      <p className="text-xs text-slate-500 mt-1">Gunakan format "Latitude, Longitude" (contoh: -0.9146964, 121.5858137). Digunakan untuk menghitung jarak rumah pendaftar ke sekolah.</p>
                     </div>
                     <div>
                       <label className={cn("block text-sm font-medium mb-1", isDarkMode ? "text-slate-300" : "text-slate-700")}>Telepon</label>
@@ -711,7 +711,7 @@ export default function AdminDashboard() {
                         type="text"
                         value={localSettings.tahunPendaftaran || ''}
                         onChange={e => setLocalSettings({...localSettings, tahunPendaftaran: e.target.value})}
-                        placeholder="Contoh: 2024"
+                        placeholder="Contoh: 2026"
                         className={cn("w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500", isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "bg-white border-slate-300")}
                       />
                     </div>
