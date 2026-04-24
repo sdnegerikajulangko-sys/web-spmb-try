@@ -51,26 +51,33 @@ const calculateAge = (dateString: string) => {
   if (!dateString) return '-';
   const birthDate = new Date(dateString);
   if (isNaN(birthDate.getTime())) return '-';
-  const today = new Date();
   
-  let years = today.getFullYear() - birthDate.getFullYear();
-  let months = today.getMonth() - birthDate.getMonth();
-  let days = today.getDate() - birthDate.getDate();
+  // Perbaikan: Menetapkan tanggal target ke 01 Juli 2026
+  const targetDate = new Date(2026, 6, 1); // Bulan di JS dimulai dari 0 (6 = Juli)
+  
+  let years = targetDate.getFullYear() - birthDate.getFullYear();
+  let months = targetDate.getMonth() - birthDate.getMonth();
+  let days = targetDate.getDate() - birthDate.getDate();
 
+  // Logika jika hari belum mencapai tanggal target
   if (days < 0) {
     months--;
-    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+    // Mengambil jumlah hari di bulan sebelumnya dari targetDate
+    const prevMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
     days += prevMonth.getDate();
   }
   
+  // Logika jika bulan belum mencapai bulan target
   if (months < 0) {
     years--;
     months += 12;
   }
   
+  // Opsional: Jika hasil tahun negatif (karena input lahir > 2026)
+  if (years < 0) return 'Belum Lahir';
+  
   return `${years} Tahun ${months} Bulan ${days} Hari`;
 };
-
 export default function AdminDashboard() {
   const { settings, refreshSettings } = useSettings();
   const [data, setData] = useState<AdminData[]>([]);
