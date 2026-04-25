@@ -80,7 +80,7 @@ const getInitialMockSettings = (): AppSettings => {
     namaSekolah: "SD Negeri Kajulangko",
     alamat: "Jl. Pendidikan, Desa Kajulangko, Kec. Ampana Tete",
     telepon: "+62 822-9294-5790",
-    email: "sd.negerikajulangko@gmail.com",
+    email: "sdnegerikajulangko@gmail.com",
     deskripsi: "Mencetak generasi penerus bangsa yang Beriman, Kompeten, Mandiri, Berdaya Saing Global, Adaptif dan Responsif Terhadap Perkembangan Zaman.",
     statusPendaftaran: "Buka",
     persyaratanDaftarUlang: "1. Membawa Bukti Kelulusan\n2. Fotokopi Akta\n3. Fotokopi KK",
