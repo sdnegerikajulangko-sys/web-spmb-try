@@ -1,40 +1,48 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react'; // Tambahkan useEffect
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
+import { useAuth } from '../context/AuthContext'; // 1. Import AuthContext (sesuaikan path-nya)
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { settings } = useSettings();
+  const { user } = useAuth(); // 2. Ambil data user yang sedang login
 
-  // Efek untuk mengubah Favicon secara dinamis
+  // Tentukan email admin yang diperbolehkan melihat menu Admin
+  // Anda bisa mengambil ini dari settings?.emailSekolah atau hardcode jika perlu
+  const adminEmail = settings?.emailSekolah || 'sdnegerikajulangko@gmail.com';
+
   useEffect(() => {
     if (settings?.logoSekolah) {
-      // Mencari elemen link icon (favicon)
       let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
-      
       if (!favicon) {
-        // Jika elemen tidak ada, buat baru
         favicon = document.createElement('link');
         favicon.rel = 'icon';
         document.head.appendChild(favicon);
       }
-      
-      // Update URL favicon
       favicon.href = settings.logoSekolah;
     }
-  }, [settings?.logoSekolah]); // Berjalan setiap kali logoSekolah berubah
+  }, [settings?.logoSekolah]);
 
-  const links = [
+  const allLinks = [
     { name: 'Beranda', path: '/' },
     { name: 'Panduan', path: '/panduan' },
     { name: 'Pendaftaran', path: '/daftar' },
     { name: 'Cek Kelulusan', path: '/cek-kelulusan' },
-    { name: 'Admin', path: '/admin' },
+    { name: 'Admin', path: '/admin', private: true }, // Tandai sebagai private
   ];
+
+  // 3. Filter link: Sembunyikan 'Admin' jika email user tidak cocok
+  const filteredLinks = allLinks.filter(link => {
+    if (link.private) {
+      return user?.email === adminEmail;
+    }
+    return true;
+  });
 
   return (
     <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 border-b border-slate-200 shadow-sm">
@@ -60,7 +68,7 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
-            {links.map((link) => (
+            {filteredLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
@@ -102,7 +110,7 @@ export default function Navbar() {
             className="md:hidden bg-white border-b border-slate-200"
           >
             <div className="px-4 pt-2 pb-4 space-y-1">
-              {links.map((link) => (
+              {filteredLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
