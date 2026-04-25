@@ -1,39 +1,55 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react'; // Tambahkan useEffect
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
+
+// 1. IMPORT HOOK AUTHENTICATION ANDA DI SINI
+// Contoh jika Anda menggunakan custom context:
+import { useAuth } from '../context/SettingContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { settings } = useSettings();
 
+  // 2. AMBIL DATA USER DARI AUTH STATE
+  // const { setting } = useSettings(); // Buka komentar ini dan sesuaikan dengan sistem auth Anda
+  
+  // (HAPUS BARIS INI NANTI) Ini hanya contoh data user statis untuk demonstrasi
+  const currentUser = { email: 'sdnegerikajulangko@gmail.com' }; 
+
+  // 3. TENTUKAN EMAIL ADMIN YANG DIIZINKAN
+  // Anda bisa memasukkan lebih dari satu email admin di dalam array ini
+  const adminEmails = ['firmanp55@admin.sd.belajar.id', 'firman.mangempang@gmail.com'];
+
+  // Cek apakah user yang login memiliki email yang terdaftar di array adminEmails
+  const isAdmin = currentUser?.email && adminEmails.includes(currentUser.email);
+
   // Efek untuk mengubah Favicon secara dinamis
   useEffect(() => {
     if (settings?.logoSekolah) {
-      // Mencari elemen link icon (favicon)
       let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
       
       if (!favicon) {
-        // Jika elemen tidak ada, buat baru
         favicon = document.createElement('link');
         favicon.rel = 'icon';
         document.head.appendChild(favicon);
       }
       
-      // Update URL favicon
       favicon.href = settings.logoSekolah;
     }
-  }, [settings?.logoSekolah]); // Berjalan setiap kali logoSekolah berubah
+  }, [settings?.logoSekolah]);
 
+  // 4. MODIFIKASI ARRAY LINKS
   const links = [
     { name: 'Beranda', path: '/' },
     { name: 'Panduan', path: '/panduan' },
     { name: 'Pendaftaran', path: '/daftar' },
     { name: 'Cek Kelulusan', path: '/cek-kelulusan' },
-    { name: 'Admin', path: '/admin' },
+    // Menu Admin hanya akan ditambahkan ke array jika isAdmin bernilai true
+    ...(isAdmin ? [{ name: 'Admin', path: '/admin' }] : []),
   ];
 
   return (
