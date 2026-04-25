@@ -37,61 +37,64 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-blue-600 border-b border-blue-700 shadow-sm text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <Link to="/" className="flex items-center gap-2">
-            {settings?.logoSekolah ? (
-              <img 
-                src={settings.logoSekolah} 
-                alt="Logo Sekolah" 
-                className="h-10 w-auto object-contain" 
-                referrerPolicy="no-referrer" 
-              />
-            ) : (
-              <div className="bg-blue-600 p-2 rounded-lg text-white">
-                <GraduationCap size={24} />
-              </div>
+<nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-amber-400 border-b border-amber-500 shadow-sm">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex justify-between h-16 items-center">
+      <Link to="/" className="flex items-center gap-2">
+        {settings?.logoSekolah ? (
+          <img 
+            src={settings.logoSekolah} 
+            alt="Logo Sekolah" 
+            className="h-10 w-auto object-contain" 
+            referrerPolicy="no-referrer" 
+          />
+        ) : (
+          /* Background icon disesuaikan agar lebih gelap sedikit dari nav */
+          <div className="bg-amber-600 p-2 rounded-lg text-white">
+            <刻GraduationCap size={24} />
+          </div>
+        )}
+        {/* Teks nama sekolah menggunakan warna slate gelap agar kontras di atas kuning */}
+        <span className="font-bold text-xl tracking-tight text-slate-900">
+          {settings?.namaSekolah || 'SD Negeri Kajulangko'}
+        </span>
+      </Link>
+
+      {/* Desktop Menu */}
+      <div className="hidden md:flex items-center space-x-8">
+        {links.map((link) => (
+          <Link
+            key={link.path}
+            to={link.path}
+            className={cn(
+              "text-sm font-semibold transition-colors hover:text-amber-800",
+              location.pathname === link.path ? "text-amber-900 underline underline-offset-4" : "text-slate-800"
             )}
-            <span className="font-bold text-xl tracking-tight text-slate-900">
-              {settings?.namaSekolah || 'SD Negeri Kajulangko'}
-            </span>
+          >
+            {link.name}
           </Link>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            {links.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-blue-600",
-                  location.pathname === link.path ? "text-blue-600" : "text-slate-600"
-                )}
-              >
-                {link.name}
-              </Link>
-            ))}
-            <Link
-              to="/daftar"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-lg"
-            >
-              Daftar Sekarang
-            </Link>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-600 hover:text-slate-900 focus:outline-none"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
+        ))}
+        {/* Tombol Daftar Sekarang menggunakan warna kontras (Slate atau Biru Tua) */}
+        <Link
+          to="/daftar"
+          className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-lg"
+        >
+          Daftar Sekarang
+        </Link>
       </div>
 
+      {/* Mobile Menu Button */}
+      <div className="md:hidden flex items-center">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="text-slate-800 hover:text-black focus:outline-none"
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
