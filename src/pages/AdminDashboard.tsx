@@ -52,31 +52,32 @@ const calculateAge = (dateString: string) => {
   const birthDate = new Date(dateString);
   if (isNaN(birthDate.getTime())) return '-';
   
-  // Perbaikan: Menetapkan tanggal target ke 01 Juli 2026
-  const targetDate = new Date(2026, 6, 1); // Bulan di JS dimulai dari 0 (6 = Juli)
-  
-  let years = targetDate.getFullYear() - birthDate.getFullYear();
-  let months = targetDate.getMonth() - birthDate.getMonth();
-  let days = targetDate.getDate() - birthDate.getDate();
+// Perbaikan: Menetapkan tanggal target ke 01 Juli tahun berjalan secara otomatis
+const currentYear = new Date().getFullYear();
+const targetDate = new Date(currentYear, 6, 1); // 6 = Juli (indeks dimulai dari 0)
 
-  // Logika jika hari belum mencapai tanggal target
-  if (days < 0) {
-    months--;
-    // Mengambil jumlah hari di bulan sebelumnya dari targetDate
-    const prevMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
-    days += prevMonth.getDate();
-  }
-  
-  // Logika jika bulan belum mencapai bulan target
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-  
-  // Opsional: Jika hasil tahun negatif (karena input lahir > 2026)
-  if (years < 0) return 'Belum Lahir';
-  
-  return `${years} Tahun ${months} Bulan ${days} Hari`;
+let years = targetDate.getFullYear() - birthDate.getFullYear();
+let months = targetDate.getMonth() - birthDate.getMonth();
+let days = targetDate.getDate() - birthDate.getDate();
+
+// Logika jika hari belum mencapai tanggal target
+if (days < 0) {
+  months--;
+  // Mengambil jumlah hari di bulan sebelumnya dari targetDate
+  const prevMonth = new Date(targetDate.getFullYear(), targetDate.getMonth(), 0);
+  days += prevMonth.getDate();
+}
+
+// Logika jika bulan belum mencapai bulan target
+if (months < 0) {
+  years--;
+  months += 12;
+}
+
+// Opsional: Jika hasil tahun negatif (karena input lahir > targetDate)
+if (years < 0) return 'Belum Lahir';
+
+return `${years} Tahun ${months} Bulan ${days} Hari`;
 };
 export default function AdminDashboard() {
   const { settings, refreshSettings } = useSettings();
