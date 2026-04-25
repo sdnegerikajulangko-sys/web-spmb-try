@@ -41,7 +41,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin size={18} className="text-blue-500 shrink-0 mt-0.5" />
-                <span>{settings?.alamatSekolah || 'Jl. Pendidikan, Desa Kajulangko, Kec. Ampana Tete'}</span>
+                <span>{settings?.alamat || 'Jl. Pendidikan, Desa Kajulangko, Kec. Ampana Tete'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-blue-500 shrink-0" />
