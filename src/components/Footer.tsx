@@ -23,7 +23,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed max-w-md">
-              {settings?.deskripsiSekolah || 'Mencetak generasi penerus bangsa yang Beriman, Kompeten, Mandiri, Berdaya Saing Global, Adaptif dan Responsif Terhadap Perkembangan Zaman'}
+              {settings?.deskripsi || 'Mencetak generasi penerus bangsa yang Beriman, Kompeten, Mandiri, Berdaya Saing Global, Adaptif dan Responsif Terhadap Perkembangan Zaman'}
             </p>
           </div>
           
@@ -45,11 +45,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={18} className="text-blue-500 shrink-0" />
-                <span>{settings?.teleponSekolah || '+62 822-92924-5790'}</span>
+                <span>{settings?.telepon || '+62 822-92924-5790'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={18} className="text-blue-500 shrink-0" />
-                <span>{settings?.emailSekolah || 'sdnegerikajulangko@gmail.com'}</span>
+                <span>{settings?.email || 'sdnegerikajulangko@gmail.com'}</span>
               </li>
             </ul>
           </div>
