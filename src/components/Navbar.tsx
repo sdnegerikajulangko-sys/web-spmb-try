@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Tambahkan useEffect
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
@@ -9,6 +9,24 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { settings } = useSettings();
+
+  // Efek untuk mengubah Favicon secara dinamis
+  useEffect(() => {
+    if (settings?.logoSekolah) {
+      // Mencari elemen link icon (favicon)
+      let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+      
+      if (!favicon) {
+        // Jika elemen tidak ada, buat baru
+        favicon = document.createElement('link');
+        favicon.rel = 'icon';
+        document.head.appendChild(favicon);
+      }
+      
+      // Update URL favicon
+      favicon.href = settings.logoSekolah;
+    }
+  }, [settings?.logoSekolah]); // Berjalan setiap kali logoSekolah berubah
 
   const links = [
     { name: 'Beranda', path: '/' },
@@ -24,7 +42,12 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center">
           <Link to="/" className="flex items-center gap-2">
             {settings?.logoSekolah ? (
-              <img src={settings.logoSekolah} alt="Logo Sekolah" className="h-10 w-auto object-contain" referrerPolicy="no-referrer" />
+              <img 
+                src={settings.logoSekolah} 
+                alt="Logo Sekolah" 
+                className="h-10 w-auto object-contain" 
+                referrerPolicy="no-referrer" 
+              />
             ) : (
               <div className="bg-blue-600 p-2 rounded-lg text-white">
                 <GraduationCap size={24} />
