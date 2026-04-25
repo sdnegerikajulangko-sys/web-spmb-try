@@ -10,7 +10,6 @@ export default function Navbar() {
   const location = useLocation();
   const { settings } = useSettings();
 
-  // Efek untuk mengubah Favicon secara dinamis
   useEffect(() => {
     if (settings?.logoSekolah) {
       let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
@@ -32,54 +31,59 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-amber-400 border-b border-amber-500 shadow-sm">
+    /* Perubahan: bg-amber-50/40 untuk kesan modern transparan, backdrop-blur-lg untuk efek kaca yang halus */
+    <nav className="sticky top-0 z-50 w-full backdrop-blur-lg bg-amber-50/40 border-b border-amber-200/20 shadow-sm transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 group">
             {settings?.logoSekolah ? (
               <img 
                 src={settings.logoSekolah} 
                 alt="Logo Sekolah" 
-                className="h-10 w-auto object-contain" 
+                className="h-10 w-auto object-contain transition-transform group-hover:scale-105" 
                 referrerPolicy="no-referrer" 
               />
             ) : (
-              <div className="bg-amber-600 p-2 rounded-lg text-white">
+              <div className="bg-amber-500/80 p-2 rounded-xl text-white shadow-sm">
                 <GraduationCap size={24} />
               </div>
             )}
-            <span className="font-bold text-xl tracking-tight text-slate-900">
+            <span className="font-bold text-lg tracking-tight text-slate-800">
               {settings?.namaSekolah || 'SD Negeri Kajulangko'}
             </span>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-1">
             {links.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "text-sm font-semibold transition-colors hover:text-amber-800",
-                  location.pathname === link.path ? "text-amber-900 underline underline-offset-4" : "text-slate-800"
+                  "px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
+                  location.pathname === link.path 
+                    ? "text-amber-700 bg-amber-100/50" 
+                    : "text-slate-600 hover:text-amber-600 hover:bg-amber-50/50"
                 )}
               >
                 {link.name}
               </Link>
             ))}
-            <Link
-              to="/daftar"
-              className="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-lg"
-            >
-              Daftar Sekarang
-            </Link>
+            <div className="pl-4">
+              <Link
+                to="/daftar"
+                className="bg-amber-600/90 hover:bg-amber-600 text-white px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-amber-200 hover:shadow-lg active:scale-95"
+              >
+                Daftar Sekarang
+              </Link>
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-slate-800 hover:text-black focus:outline-none"
+              className="p-2 text-slate-600 hover:bg-amber-100/50 rounded-lg transition-colors"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -91,22 +95,22 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-amber-50 border-b border-amber-200"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="md:hidden bg-white/90 backdrop-blur-xl border-b border-amber-100"
           >
-            <div className="px-4 pt-2 pb-4 space-y-1">
+            <div className="px-4 pt-2 pb-6 space-y-2">
               {links.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "block px-3 py-2 rounded-md text-base font-medium",
+                    "block px-4 py-3 rounded-xl text-base font-medium transition-colors",
                     location.pathname === link.path
-                      ? "bg-amber-200 text-amber-900"
-                      : "text-slate-700 hover:bg-amber-100"
+                      ? "bg-amber-100 text-amber-800"
+                      : "text-slate-600 hover:bg-amber-50"
                   )}
                 >
                   {link.name}
