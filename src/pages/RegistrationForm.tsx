@@ -52,42 +52,18 @@ export default function RegistrationForm() {
   };
 
   const handleLocationSelect = (lat: number, lng: number) => {
-  setMapLocation({ lat, lng });
-  
-  // Update koordinat utama
-  setFormData(prev => ({ ...prev, 'Koordinat Lokasi': `${lat}, ${lng}` }));
-  
-  if (settings?.koordinatSekolah) {
-    const coords = settings.koordinatSekolah.split(',');
+    setMapLocation({ lat, lng });
+    setFormData(prev => ({ ...prev, 'Koordinat Lokasi': `${lat}, ${lng}` }));
     
-    if (coords.length === 2) {
-      const schoolLat = parseFloat(coords[0].trim());
-      const schoolLng = parseFloat(coords[1].trim());
-
+    if (settings?.koordinatSekolah) {
+      const [schoolLat, schoolLng] = settings.koordinatSekolah.split(',').map(s => parseFloat(s.trim()));
       if (!isNaN(schoolLat) && !isNaN(schoolLng)) {
         const dist = calculateDistance(lat, lng, schoolLat, schoolLng);
         setDistance(dist);
-
-        // Logika penentuan keterangan jarak
-        const jarakTerlaluJauh = dist > 5;
-        const keteranganJarak = jarakTerlaluJauh 
-          ? "Jarak lebih dari 5 km (Melebihi batas zonasi)" 
-          : "Dalam jangkauan zonasi";
-
-        setFormData(prev => ({ 
-          ...prev, 
-          'Jarak ke Sekolah (km)': dist.toFixed(2),
-          'Keterangan Jarak': keteranganJarak // Field baru untuk keterangan
-        }));
-
-        // Opsional: Tampilkan alert atau peringatan visual jika > 5km
-        if (jarakTerlaluJauh) {
-          console.warn("Peringatan: Lokasi pendaftar di luar radius 5 km.");
-        }
+        setFormData(prev => ({ ...prev, 'Jarak ke Sekolah (km)': dist.toFixed(2) }));
       }
     }
-  }
-};
+  };
 
   const printProof = (noPendaftaran: string) => {
     const doc = new jsPDF();
@@ -369,25 +345,16 @@ export default function RegistrationForm() {
                     <MapPicker onLocationSelect={handleLocationSelect} />
                     
                     {distance !== null && (
-                      <div className={`mt-3 p-3 border rounded-lg flex items-center justify-between ${
-    distance > 5 ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-100'
-  }`}>
-			<span className={`text-sm ${distance > 5 ? 'text-red-700' : 'text-slate-700'}`}>
-      			  Jarak ke Sekolah:
-    			</span>
-    			<div className="text-right">
-      			  <span className={`font-bold block ${distance > 5 ? 'text-red-700' : 'text-blue-700'}`}>
-        		    {distance.toFixed(2)} km
-      			</span>
-      			{distance > 5 && (
-        		<span className="text-[10px] text-red-600 font-medium italic">
-          		  *Maaf, lokasi Anda di luar radius zonasi (5 km).
-        		</span>
-      		    )}
-    		</div>
-  	     </div>
-	   )}
-                       
+                      <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between">
+                        <span className="text-sm text-slate-700">Jarak ke Sekolah:</span>
+                        <span className="font-bold text-blue-700">{distance.toFixed(2)} km</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {fileFields.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-slate-900 border-b pb-2 mb-6 flex items-center gap-2">
@@ -433,27 +400,19 @@ export default function RegistrationForm() {
             <div className="pt-4 border-t border-slate-100">
               <button
                 type="submit"
-
-		// Tambahkan kondisi distance > 5 di sini
-  		disabled={isSubmitting || (distance !== null && distance > 5)}
-  		className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-md flex items-center justify-center 
-    		${(distance !== null && distance > 5) 
-      		  ? 'bg-slate-400 cursor-not-allowed' 
-      		  : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
-    		} disabled:opacity-70`}
-	     >
-  	       {isSubmitting ? (
-    		 <>
-      		   <Loader2 className="animate-spin mr-2" size={24} />
-      		   Memproses...
-    		 </>
-  	      ) : (distance !== null && distance > 5) ? (
-    		'Jarak Melebihi Batas (Maks 5km)'
-  	      ) : (
-    		'Kirim Pendaftaran'
-  	      )}
-	    </button>		
-                </div>
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-md hover:shadow-lg disabled:opacity-70 flex items-center justify-center"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="animate-spin mr-2" size={24} />
+                    Memproses...
+                  </>
+                ) : (
+                  'Kirim Pendaftaran'
+                )}
+              </button>
+            </div>
           </form>
         </motion.div>
       </div>
