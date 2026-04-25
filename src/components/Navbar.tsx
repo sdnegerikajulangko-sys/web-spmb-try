@@ -14,7 +14,7 @@ export default function Navbar() {
 
   // Tentukan email admin yang diperbolehkan melihat menu Admin
   // Anda bisa mengambil ini dari settings?.emailSekolah atau hardcode jika perlu
-  const adminEmail = settings?.emailSekolah || 'sdnegerikajulangko@gmail.com';
+  const adminEmail = settings?.email || 'sdnegerikajulangko@gmail.com';
 
   useEffect(() => {
     if (settings?.logoSekolah) {
