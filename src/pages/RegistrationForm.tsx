@@ -69,9 +69,9 @@ export default function RegistrationForm() {
         setDistance(dist);
 
         // Logika penentuan keterangan jarak
-        const jarakTerlaluJauh = dist > 5;
+        const jarakTerlaluJauh = dist > 2;
         const keteranganJarak = jarakTerlaluJauh 
-          ? "Jarak lebih dari 5 km (Melebihi batas zonasi)" 
+          ? "Jarak lebih dari 2 km (Melebihi batas zonasi)" 
           : "Dalam jangkauan zonasi";
 
         setFormData(prev => ({ 
@@ -80,9 +80,9 @@ export default function RegistrationForm() {
           'Keterangan Jarak': keteranganJarak // Field baru untuk keterangan
         }));
 
-        // Opsional: Tampilkan alert atau peringatan visual jika > 5km
+        // Opsional: Tampilkan alert atau peringatan visual jika > 2km
         if (jarakTerlaluJauh) {
-          console.warn("Peringatan: Lokasi pendaftar di luar radius 5 km.");
+          console.warn("Peringatan: Lokasi pendaftar di luar radius 2 km.");
         }
       }
     }
