@@ -339,7 +339,7 @@ export default function RegistrationForm() {
           </div>
 
           <form onSubmit={handleSubmit} className="p-8 space-y-8">
-            
+            {/* BAGIAN 1: DATA PENDAFTAR */}
             {textFields.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-slate-900 border-b pb-2 mb-6 flex items-center gap-2">
@@ -356,6 +356,7 @@ export default function RegistrationForm() {
                     </div>
                   ))}
                   
+		  {/* MAP PICKER */}
                   <div className="col-span-1 md:col-span-2 mt-4">
                     <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
                       <MapPin size={18} className="text-blue-600" />
@@ -380,17 +381,22 @@ export default function RegistrationForm() {
       			{distance > 5 && (
         		<span className="text-[10px] text-red-600 font-medium italic">
           		  *Maaf, lokasi Anda di luar radius zonasi (5 km).
-        		</span>
-      		    )}
-    		</div>
-  	     </div>
-	   )}
-                       
-            {fileFields.length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 border-b pb-2 mb-6 flex items-center gap-2">
-                  <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
-                  Upload Berkas
+			</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}   
+
+	{/* BAGIAN 2: UPLOAD BERKAS */}                    
+        {fileFields.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 border-b pb-2 mb-6 flex items-center gap-2">
+              <span className="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+              Upload Berkas
                 </h3>
                 <p className="text-sm text-slate-500 mb-6 flex items-center gap-2 bg-blue-50 p-3 rounded-lg border border-blue-100">
                   <AlertCircle size={16} className="text-blue-500 shrink-0" />
@@ -428,15 +434,16 @@ export default function RegistrationForm() {
               </label>
             </div>
 
+
+	    {/* TOMBOL SUBMIT */}
             <div className="pt-4 border-t border-slate-100">
               <button
                 type="submit"
-
-		// Tambahkan kondisi distance > 5 di sini
+		// LOGIKA UTAMA: Disable jika sedang proses, atau jarak > 5km
   		disabled={isSubmitting || (distance !== null && distance > 5)}
   		className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-md flex items-center justify-center 
     		${(distance !== null && distance > 5) 
-      		  ? 'bg-slate-400 cursor-not-allowed' 
+      		  ? 'bg-slate-300 text-slate-500 cursor-not-allowed shadow-none' 
       		  : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
     		} disabled:opacity-70`}
 	     >
@@ -451,10 +458,10 @@ export default function RegistrationForm() {
     		'Kirim Pendaftaran'
   	      )}
 	    </button>		
-                </div>
-          </form>
-        </motion.div>
-      </div>
+          </div>
+        </form>
+      </motion.div>
     </div>
-  );
+  </div>
+ );
 }
