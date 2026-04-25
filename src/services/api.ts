@@ -1,7 +1,7 @@
 // Service to interact with Google Apps Script Backend
 
 // To use the real backend, replace this URL with your deployed Google Apps Script Web App URL
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyAScqGXVbmreMwHkwbNzER1phC69MDFfvYCk5a9QZf0ed9wTjHg2l7J9W2a29-DQ0Weg/exec"; 
+const GAS_WEB_APP_URL = "isikan link App Script di sini"; 
 
 export interface FormField {
   id: string;
@@ -64,54 +64,64 @@ export interface AdminData extends RegistrationData {
   'Alasan Penolakan'?: string;
 }
 
-// --- AUTH HELPER FUNCTIONS ---
-export const getStoredUser = () => {
-  const stored = localStorage.getItem('user_session');
-  return stored ? JSON.parse(stored) : null;
-};
-
-export const clearStoredUser = () => {
-  localStorage.removeItem('user_session');
-};
-
-// --- MOCK DATA INITIALIZATION ---
+// Mock data for preview if GAS URL is not set
 const getInitialMockSettings = (): AppSettings => {
   const defaultSettings: AppSettings = {
     namaSekolah: "SD Negeri Kajulangko",
     alamat: "Jl. Pendidikan, Desa Kajulangko, Kec. Ampana Tete",
     telepon: "+62 822-9294-5790",
-    email: "sdnegerikajulangko@gmail.com",
+    email: "sd.negerikajulangko@gmail.com",
     deskripsi: "Mencetak generasi penerus bangsa yang Beriman, Kompeten, Mandiri, Berdaya Saing Global, Adaptif dan Responsif Terhadap Perkembangan Zaman.",
     statusPendaftaran: "Buka",
-    persyaratanDaftarUlang: "1. Membawa Bukti Kelulusan\n2. Fotokopi Akta\n3. Fotokopi KK",
-    tanggalDaftarUlang: "2026-07-15",
+    persyaratanDaftarUlang: "1. Membawa Bukti Kelulusan yang dicetak\n2. Membawa Fotokopi Akta Kelahiran (2 lembar)\n3. Membawa Fotokopi Kartu Keluarga (2 lembar)\n4. Membawa Pas Foto 3x4 (4 lembar)\n5. Melakukan pembayaran administrasi awal",
+    tanggalDaftarUlang: "2024-07-15",
     tanggalPengumuman: "",
     logoSekolah: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=2022&auto=format&fit=crop",
     tahunPendaftaran: new Date().getFullYear().toString(),
-    koordinatSekolah: "-0.9071117,121.5844096",
-    sambutanKepalaSekolah: "Selamat datang di website resmi SPMB SD Negeri Kajulangko...",
+    koordinatSekolah: "-0.9071117,121.5844096", // Default to Tojo Una-Una
+    sambutanKepalaSekolah: "Selamat datang di website resmi SPMB SD Negeri Kajulangko. Kami berkomitmen untuk memberikan pelayanan pendidikan terbaik bagi putra-putri Anda. Mari bergabung bersama kami untuk mencetak generasi penerus bangsa yang cerdas, berakhlak mulia, dan berprestasi.",
     fotoKepalaSekolah: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200&auto=format&fit=crop",
-    visiSekolah: "Menjadi sekolah dasar unggulan...",
-    misiSekolah: "1. Menyelenggarakan pembelajaran aktif...",
+    visiSekolah: "Menjadi sekolah dasar unggulan yang menghasilkan lulusan berakhlak mulia, cerdas, terampil, dan berwawasan lingkungan.",
+    misiSekolah: "1. Menyelenggarakan pembelajaran yang aktif, inovatif, kreatif, efektif, dan menyenangkan (PAIKEM).\n2. Menanamkan nilai-nilai agama dan budi pekerti luhur dalam kehidupan sehari-hari.\n3. Mengembangkan potensi, bakat, dan minat siswa melalui kegiatan ekstrakurikuler.\n4. Menciptakan lingkungan sekolah yang bersih, sehat, dan asri.",
     formFields: [
       { id: "Nama Lengkap", label: "Nama Lengkap", type: "text", required: true },
-      { id: "NIK", label: "NIK", type: "text", required: true }
+      { id: "NIK", label: "NIK", type: "text", required: true },
+      { id: "Tempat Lahir", label: "Tempat Lahir", type: "text", required: true },
+      { id: "Tanggal Lahir", label: "Tanggal Lahir", type: "date", required: true },
+      { id: "Jenis Kelamin", label: "Jenis Kelamin", type: "select", options: ["Laki-laki", "Perempuan"], required: true },
+      { id: "Alamat", label: "Alamat Lengkap", type: "textarea", required: true },
+      { id: "Nama Orang Tua", label: "Nama Orang Tua/Wali", type: "text", required: true },
+      { id: "No HP", label: "No. WhatsApp Aktif", type: "text", required: true },
+      { id: "Foto Siswa", label: "Pas Foto 3x4", type: "file", required: true },
+      { id: "Kartu Keluarga", label: "Kartu Keluarga", type: "file", required: true },
+      { id: "Akta Kelahiran", label: "Akta Kelahiran", type: "file", required: true }
     ],
     panduanJudul: "Panduan Pendaftaran SPMB",
-    panduanDeskripsi: "Persiapkan dokumen berikut...",
-    panduanPeringatan: "Pastikan semua dokumen jelas...",
+    panduanDeskripsi: "Persiapkan dokumen berikut sebelum mulai mengisi formulir pendaftaran.",
+    panduanPeringatan: "Pastikan semua dokumen di-scan atau difoto dengan jelas dan dapat terbaca. Format file yang disarankan adalah JPG, PNG, atau PDF dengan ukuran maksimal 2MB per file.",
     panduanDokumen: [
-      { id: "1", icon: "FileDigit", title: "Kartu Keluarga (KK)", description: "Asli atau fotokopi." }
+      { id: "1", icon: "FileDigit", title: "Kartu Keluarga (KK)", description: "Asli atau fotokopi yang dilegalisir. Pastikan NIK dan nama calon siswa tercantum dengan benar." },
+      { id: "2", icon: "FileBadge", title: "Akta Kelahiran", description: "Dokumen asli atau fotokopi legalisir untuk verifikasi usia dan data diri calon siswa." },
+      { id: "3", icon: "FileImage", title: "Pas Foto Terbaru", description: "Pas foto berwarna ukuran 3x4 dengan latar belakang merah atau biru." },
+      { id: "4", icon: "FileText", title: "Ijazah / SKHUN (Jika Ada)", description: "Surat Keterangan Lulus atau Ijazah dari jenjang pendidikan sebelumnya (TK/PAUD)." }
     ],
-    panduanAlur: ["Siapkan dokumen", "Isi formulir", "Kirim"]
+    panduanAlur: [
+      "Siapkan seluruh dokumen persyaratan dalam bentuk file digital (foto/scan).",
+      "Klik tombol 'Mulai Pendaftaran' di bawah atau menu 'Daftar' di navigasi.",
+      "Isi seluruh kolom formulir dengan data yang valid dan sesuai dengan dokumen asli.",
+      "Tandai lokasi rumah Anda di peta yang disediakan untuk perhitungan jarak.",
+      "Unggah dokumen persyaratan pada kolom yang tersedia.",
+      "Kirim formulir dan simpan Nomor Pendaftaran Anda untuk mengecek status kelulusan."
+    ]
   };
 
   const stored = localStorage.getItem('mockSettings');
   if (stored) {
     try {
-      return { ...defaultSettings, ...JSON.parse(stored) };
+      const parsed = JSON.parse(stored);
+      return { ...defaultSettings, ...parsed }; // Merge default settings with parsed local settings
     } catch (e) {
-      console.error(e);
+      console.error("Failed to parse mock settings from localStorage", e);
     }
   }
   return defaultSettings;
@@ -124,7 +134,7 @@ const saveMockSettings = (settings: AppSettings) => {
   try {
     localStorage.setItem('mockSettings', JSON.stringify(settings));
   } catch (e) {
-    console.error(e);
+    console.error("Failed to save mock settings to localStorage", e);
   }
 };
 
@@ -134,7 +144,7 @@ const getInitialMockData = (): AdminData[] => {
     try {
       return JSON.parse(stored);
     } catch (e) {
-      console.error(e);
+      console.error("Failed to parse mock data from localStorage", e);
     }
   }
   return [
@@ -143,6 +153,12 @@ const getInitialMockData = (): AdminData[] => {
       'No Pendaftaran': "SPMB-2026-001",
       'Nama Lengkap': "Afdhal Aditya",
       'NIK': "1234567890123456",
+      'Tempat Lahir': "Tojo Una-Una",
+      'Tanggal Lahir': "2015-05-10",
+      'Jenis Kelamin': "Laki-laki",
+      'Alamat': "Jl. Sis Al Jufri",
+      'Nama Orang Tua': "Firman P.",
+      'No HP': "081234567890",
       Status: "Proses"
     }
   ];
@@ -152,10 +168,12 @@ let mockData: AdminData[] = getInitialMockData();
 
 const saveMockData = (data: AdminData[]) => {
   mockData = data;
-  localStorage.setItem('mockData', JSON.stringify(data));
+  try {
+    localStorage.setItem('mockData', JSON.stringify(data));
+  } catch (e) {
+    console.error("Failed to save mock data to localStorage", e);
+  }
 };
-
-// --- API EXPORTS ---
 
 export const getSettings = async (): Promise<AppSettings> => {
   if (!GAS_WEB_APP_URL) {
@@ -187,7 +205,10 @@ export const updateSettings = async (settings: Partial<AppSettings>) => {
   try {
     const response = await fetch(GAS_WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "updateSettings", settings }),
+      body: JSON.stringify({
+        action: "updateSettings",
+        settings
+      }),
       headers: { "Content-Type": "text/plain;charset=utf-8" },
     });
     return await response.json();
@@ -195,42 +216,6 @@ export const updateSettings = async (settings: Partial<AppSettings>) => {
     console.error("Error updating settings:", error);
     throw error;
   }
-};
-
-export const loginAdmin = async (username: string, password: string) => {
-  if (!GAS_WEB_APP_URL) {
-    await new Promise(resolve => setTimeout(resolve, 800));
-    if (username === 'admin' && password === 'admin123') {
-      const userData = {
-        email: mockSettings.email,
-        name: "Administrator"
-      };
-      localStorage.setItem('user_session', JSON.stringify(userData));
-      return { status: "success", user: userData };
-    }
-    return { status: "error", message: "Username atau password salah" };
-  }
-
-  try {
-    const response = await fetch(GAS_WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify({ action: "login", username, password }),
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-    });
-    const result = await response.json();
-    if (result.status === "success") {
-      localStorage.setItem('user_session', JSON.stringify(result.user));
-    }
-    return result;
-  } catch (error) {
-    console.error("Error logging in:", error);
-    throw error;
-  }
-};
-
-export const logoutAdmin = () => {
-  clearStoredUser();
-  return { status: "success" };
 };
 
 export const submitRegistration = async (data: RegistrationData) => {
@@ -267,10 +252,14 @@ export const getRegistrations = async (): Promise<AdminData[]> => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     return [...mockData];
   }
+
   try {
     const response = await fetch(`${GAS_WEB_APP_URL}?t=${Date.now()}`);
     const result = await response.json();
-    return result.status === "success" ? result.data : [];
+    if (result.status === "success") {
+      return result.data;
+    }
+    throw new Error(result.message);
   } catch (error) {
     console.error("Error fetching registrations:", error);
     throw error;
@@ -284,7 +273,9 @@ export const updateStatus = async (noPendaftaran: string, newStatus: string, ala
     if (index !== -1) {
       const newData = [...mockData];
       newData[index] = { ...newData[index], Status: newStatus as any };
-      if (alasan !== undefined) newData[index]['Alasan Penolakan'] = alasan;
+      if (alasan !== undefined) {
+        newData[index]['Alasan Penolakan'] = alasan;
+      }
       saveMockData(newData);
       return { status: "success" };
     }
@@ -294,8 +285,15 @@ export const updateStatus = async (noPendaftaran: string, newStatus: string, ala
   try {
     const response = await fetch(GAS_WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "updateStatus", noPendaftaran, newStatus, alasan }),
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "updateStatus",
+        noPendaftaran,
+        newStatus,
+        alasan
+      }),
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
     });
     return await response.json();
   } catch (error) {
@@ -326,12 +324,45 @@ export const checkStatus = async (noPendaftaran: string) => {
   try {
     const response = await fetch(GAS_WEB_APP_URL, {
       method: "POST",
-      body: JSON.stringify({ action: "checkStatus", noPendaftaran }),
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "checkStatus",
+        noPendaftaran
+      }),
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
     });
     return await response.json();
   } catch (error) {
     console.error("Error checking status:", error);
+    throw error;
+  }
+};
+
+export const loginAdmin = async (username: string, password: string) => {
+  if (!GAS_WEB_APP_URL) {
+    await new Promise(resolve => setTimeout(resolve, 800));
+    if (username === 'admin' && password === 'admin123') {
+      return { status: "success" };
+    }
+    return { status: "error", message: "Username atau password salah" };
+  }
+
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "login",
+        username,
+        password
+      }),
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error logging in:", error);
     throw error;
   }
 };
