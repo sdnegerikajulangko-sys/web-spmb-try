@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'; // Tambahkan useEffect
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
@@ -10,17 +10,23 @@ export default function Navbar() {
   const location = useLocation();
   const { settings } = useSettings();
 
+  // Efek untuk mengubah Favicon secara dinamis
   useEffect(() => {
     if (settings?.logoSekolah) {
+      // Mencari elemen link icon (favicon)
       let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
+      
       if (!favicon) {
+        // Jika elemen tidak ada, buat baru
         favicon = document.createElement('link');
         favicon.rel = 'icon';
         document.head.appendChild(favicon);
       }
+      
+      // Update URL favicon
       favicon.href = settings.logoSekolah;
     }
-  }, [settings?.logoSekolah]);
+  }, [settings?.logoSekolah]); // Berjalan setiap kali logoSekolah berubah
 
   const links = [
     { name: 'Beranda', path: '/' },
@@ -31,59 +37,54 @@ export default function Navbar() {
   ];
 
   return (
-    /* Perubahan: bg-amber-50/40 untuk kesan modern transparan, backdrop-blur-lg untuk efek kaca yang halus */
-    <nav className="sticky top-0 z-50 w-full backdrop-blur-lg bg-amber-50/40 border-b border-amber-200/20 shadow-sm transition-all duration-300">
+    <nav className="sticky top-0 z-50 w-full backdrop-blur-md bg-white/80 border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2">
             {settings?.logoSekolah ? (
               <img 
                 src={settings.logoSekolah} 
                 alt="Logo Sekolah" 
-                className="h-10 w-auto object-contain transition-transform group-hover:scale-105" 
+                className="h-10 w-auto object-contain" 
                 referrerPolicy="no-referrer" 
               />
             ) : (
-              <div className="bg-amber-500/80 p-2 rounded-xl text-white shadow-sm">
+              <div className="bg-blue-600 p-2 rounded-lg text-white">
                 <GraduationCap size={24} />
               </div>
             )}
-            <span className="font-bold text-lg tracking-tight text-slate-800">
+            <span className="font-bold text-xl tracking-tight text-slate-900">
               {settings?.namaSekolah || 'SD Negeri Kajulangko'}
             </span>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-8">
             {links.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "px-4 py-2 text-sm font-medium rounded-full transition-all duration-200",
-                  location.pathname === link.path 
-                    ? "text-amber-700 bg-amber-100/50" 
-                    : "text-slate-600 hover:text-amber-600 hover:bg-amber-50/50"
+                  "text-sm font-medium transition-colors hover:text-blue-600",
+                  location.pathname === link.path ? "text-blue-600" : "text-slate-600"
                 )}
               >
                 {link.name}
               </Link>
             ))}
-            <div className="pl-4">
-              <Link
-                to="/daftar"
-                className="bg-amber-600/90 hover:bg-amber-600 text-white px-6 py-2 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-amber-200 hover:shadow-lg active:scale-95"
-              >
-                Daftar Sekarang
-              </Link>
-            </div>
+            <Link
+              to="/daftar"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-sm font-medium transition-all shadow-md hover:shadow-lg"
+            >
+              Daftar Sekarang
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-slate-600 hover:bg-amber-100/50 rounded-lg transition-colors"
+              className="text-slate-600 hover:text-slate-900 focus:outline-none"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -95,22 +96,22 @@ export default function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden bg-white/90 backdrop-blur-xl border-b border-amber-100"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-white border-b border-slate-200"
           >
-            <div className="px-4 pt-2 pb-6 space-y-2">
+            <div className="px-4 pt-2 pb-4 space-y-1">
               {links.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    "block px-4 py-3 rounded-xl text-base font-medium transition-colors",
+                    "block px-3 py-2 rounded-md text-base font-medium",
                     location.pathname === link.path
-                      ? "bg-amber-100 text-amber-800"
-                      : "text-slate-600 hover:bg-amber-50"
+                      ? "bg-blue-50 text-blue-600"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   )}
                 >
                   {link.name}
