@@ -15,7 +15,7 @@ export default function RegistrationForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
-  const [formData, setFormData] = useState<RegistrationData>({});
+  const [formData, setFormData] = useState<Record<string, any>>({});
   const [previews, setPreviews] = useState<Record<string, string>>({});
   const [mapLocation, setMapLocation] = useState<{lat: number, lng: number} | null>(null);
   const [distance, setDistance] = useState<number | null>(null);
@@ -52,18 +52,42 @@ export default function RegistrationForm() {
   };
 
   const handleLocationSelect = (lat: number, lng: number) => {
-    setMapLocation({ lat, lng });
-    setFormData(prev => ({ ...prev, 'Koordinat Lokasi': `${lat}, ${lng}` }));
+  setMapLocation({ lat, lng });
+  
+  // Update koordinat utama
+  setFormData(prev => ({ ...prev, 'Koordinat Lokasi': `${lat}, ${lng}` }));
+  
+  if (settings?.koordinatSekolah) {
+    const coords = settings.koordinatSekolah.split(',');
     
-    if (settings?.koordinatSekolah) {
-      const [schoolLat, schoolLng] = settings.koordinatSekolah.split(',').map(s => parseFloat(s.trim()));
+    if (coords.length === 2) {
+      const schoolLat = parseFloat(coords[0].trim());
+      const schoolLng = parseFloat(coords[1].trim());
+
       if (!isNaN(schoolLat) && !isNaN(schoolLng)) {
         const dist = calculateDistance(lat, lng, schoolLat, schoolLng);
         setDistance(dist);
-        setFormData(prev => ({ ...prev, 'Jarak ke Sekolah (km)': dist.toFixed(2) }));
+
+        // Logika penentuan keterangan jarak
+        const jarakTerlaluJauh = dist > 5;
+        const keteranganJarak = jarakTerlaluJauh 
+          ? "Jarak lebih dari 5 km (Melebihi batas zonasi)" 
+          : "Dalam jangkauan zonasi";
+
+        setFormData(prev => ({ 
+          ...prev, 
+          'Jarak ke Sekolah (km)': dist.toFixed(2),
+          'Keterangan Jarak': keteranganJarak // Field baru untuk keterangan
+        }));
+
+        // Opsional: Tampilkan alert atau peringatan visual jika > 5km
+        if (jarakTerlaluJauh) {
+          console.warn("Peringatan: Lokasi pendaftar di luar radius 5 km.");
+        }
       }
     }
-  };
+  }
+};
 
   const printProof = (noPendaftaran: string) => {
     const doc = new jsPDF();
@@ -224,7 +248,8 @@ export default function RegistrationForm() {
 
   const renderField = (field: any) => {
     const commonClasses = "w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors";
-    
+  
+  const fieldValue = formData[field.label] || '';
     switch (field.type) {
       case 'textarea':
         return (
@@ -232,7 +257,7 @@ export default function RegistrationForm() {
             name={field.label}
             required={field.required}
             rows={3}
-            value={formData[field.label] || ''}
+            value={fieldValue}
             onChange={handleChange}
             className={`${commonClasses} resize-none`}
             placeholder={field.label}
@@ -243,7 +268,7 @@ export default function RegistrationForm() {
           <select
             name={field.label}
             required={field.required}
-            value={formData[field.label] || ''}
+            value={fieldValue}
             onChange={handleChange}
             className={`${commonClasses} bg-white`}
           >
@@ -259,7 +284,7 @@ export default function RegistrationForm() {
             <input
               type="file"
               accept="image/jpeg, image/png, application/pdf"
-              required={field.required}
+              required={field.required && !formData[field.label]} // Perbaikan: required hanya jika belum ada file
               onChange={(e) => handleFileChange(e, field.label)}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
@@ -273,9 +298,6 @@ export default function RegistrationForm() {
                     <span className="text-sm text-blue-700 font-medium">File Terpilih</span>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-white text-sm font-medium">Ubah File</span>
-                </div>
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full p-4 text-center">
@@ -291,7 +313,7 @@ export default function RegistrationForm() {
             type={field.type}
             name={field.label}
             required={field.required}
-            value={formData[field.label] || ''}
+            value={fieldValue}
             onChange={handleChange}
             className={commonClasses}
             placeholder={field.label}
@@ -345,16 +367,25 @@ export default function RegistrationForm() {
                     <MapPicker onLocationSelect={handleLocationSelect} />
                     
                     {distance !== null && (
-                      <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-center justify-between">
-                        <span className="text-sm text-slate-700">Jarak ke Sekolah:</span>
-                        <span className="font-bold text-blue-700">{distance.toFixed(2)} km</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
+                      <div className={`mt-3 p-3 border rounded-lg flex items-center justify-between ${
+    distance > 5 ? 'bg-red-50 border-red-200' : 'bg-blue-50 border-blue-100'
+  }`}>
+			<span className={`text-sm ${distance > 5 ? 'text-red-700' : 'text-slate-700'}`}>
+      			  Jarak ke Sekolah:
+    			</span>
+    			<div className="text-right">
+      			  <span className={`font-bold block ${distance > 5 ? 'text-red-700' : 'text-blue-700'}`}>
+        		    {distance.toFixed(2)} km
+      			</span>
+      			{distance > 5 && (
+        		<span className="text-[10px] text-red-600 font-medium italic">
+          		  *Maaf, lokasi Anda di luar radius zonasi (5 km).
+        		</span>
+      		    )}
+    		</div>
+  	     </div>
+	   )}
+                       
             {fileFields.length > 0 && (
               <div>
                 <h3 className="text-lg font-semibold text-slate-900 border-b pb-2 mb-6 flex items-center gap-2">
@@ -400,19 +431,27 @@ export default function RegistrationForm() {
             <div className="pt-4 border-t border-slate-100">
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-md hover:shadow-lg disabled:opacity-70 flex items-center justify-center"
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="animate-spin mr-2" size={24} />
-                    Memproses...
-                  </>
-                ) : (
-                  'Kirim Pendaftaran'
-                )}
-              </button>
-            </div>
+
+		// Tambahkan kondisi distance > 5 di sini
+  		disabled={isSubmitting || (distance !== null && distance > 5)}
+  		className={`w-full px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-md flex items-center justify-center 
+    		${(distance !== null && distance > 5) 
+      		  ? 'bg-slate-400 cursor-not-allowed' 
+      		  : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
+    		} disabled:opacity-70`}
+	     >
+  	       {isSubmitting ? (
+    		 <>
+      		   <Loader2 className="animate-spin mr-2" size={24} />
+      		   Memproses...
+    		 </>
+  	      ) : (distance !== null && distance > 5) ? (
+    		'Jarak Melebihi Batas (Maks 5km)'
+  	      ) : (
+    		'Kirim Pendaftaran'
+  	      )}
+	    </button>		
+                </div>
           </form>
         </motion.div>
       </div>
