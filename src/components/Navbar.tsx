@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
-import { useAuth } from '../context/AuthContext'; // 1. Import AuthContext (sesuaikan path-nya)
+import { useAuth } from '../context/SettingsContext'; // 1. Import AuthContext (sesuaikan path-nya)
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
