@@ -52,19 +52,42 @@ export default function RegistrationForm() {
   };
 
   const handleLocationSelect = (lat: number, lng: number) => {
-    setMapLocation({ lat, lng });
-    setFormData(prev => ({ ...prev, 'Koordinat Lokasi': `${lat}, ${lng}` }));
+  setMapLocation({ lat, lng });
+  
+  // Update koordinat utama
+  setFormData(prev => ({ ...prev, 'Koordinat Lokasi': `${lat}, ${lng}` }));
+  
+  if (settings?.koordinatSekolah) {
+    const coords = settings.koordinatSekolah.split(',');
     
-    if (settings?.koordinatSekolah) {
-      const [schoolLat, schoolLng] = settings.koordinatSekolah.split(',').map(s => parseFloat(s.trim()));
+    if (coords.length === 2) {
+      const schoolLat = parseFloat(coords[0].trim());
+      const schoolLng = parseFloat(coords[1].trim());
+
       if (!isNaN(schoolLat) && !isNaN(schoolLng)) {
         const dist = calculateDistance(lat, lng, schoolLat, schoolLng);
         setDistance(dist);
-        setFormData(prev => ({ ...prev, 'Jarak ke Sekolah (km)': dist.toFixed(2) }));
+
+        // Logika penentuan keterangan jarak
+        const jarakTerlaluJauh = dist > 5;
+        const keteranganJarak = jarakTerlaluJauh 
+          ? "Jarak lebih dari 5 km (Melebihi batas zonasi)" 
+          : "Dalam jangkauan zonasi";
+
+        setFormData(prev => ({ 
+          ...prev, 
+          'Jarak ke Sekolah (km)': dist.toFixed(2),
+          'Keterangan Jarak': keteranganJarak // Field baru untuk keterangan
+        }));
+
+        // Opsional: Tampilkan alert atau peringatan visual jika > 5km
+        if (jarakTerlaluJauh) {
+          console.warn("Peringatan: Lokasi pendaftar di luar radius 5 km.");
+        }
       }
     }
-  };
-
+  }
+};
   const printProof = (noPendaftaran: string) => {
     const doc = new jsPDF();
     
