@@ -1,46 +1,39 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'; // Tambahkan useEffect
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
-import { useAuth } from '../context/SettingContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { settings } = useSettings();
-  const { currentUser } = useAuth();
-  const currentUser = { email: 'sdnegerikajulangko@gmail.com' }; 
-  const adminEmails = [
-    'sdnegerikajulangko@gmail.com',
-    'firmanp55@admin.sd.belajar.id' // Ubah jika format aslinya berbeda
-  ];
-
-   const isAdmin = currentUser?.email && adminEmails.includes(currentUser.email);
 
   // Efek untuk mengubah Favicon secara dinamis
   useEffect(() => {
     if (settings?.logoSekolah) {
+      // Mencari elemen link icon (favicon)
       let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
       
       if (!favicon) {
+        // Jika elemen tidak ada, buat baru
         favicon = document.createElement('link');
         favicon.rel = 'icon';
         document.head.appendChild(favicon);
       }
       
+      // Update URL favicon
       favicon.href = settings.logoSekolah;
     }
-  }, [settings?.logoSekolah]);
+  }, [settings?.logoSekolah]); // Berjalan setiap kali logoSekolah berubah
 
-  // Modifikasi menu berdasarkan status admin
   const links = [
     { name: 'Beranda', path: '/' },
     { name: 'Panduan', path: '/panduan' },
     { name: 'Pendaftaran', path: '/daftar' },
     { name: 'Cek Kelulusan', path: '/cek-kelulusan' },
-    ...(isAdmin ? [{ name: 'Admin', path: '/admin' }] : []),
+    { name: 'Admin', path: '/admin' },
   ];
 
   return (
