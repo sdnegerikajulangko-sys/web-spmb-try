@@ -7,7 +7,7 @@ import { useSettings } from '../context/SettingsContext';
 
 // 1. IMPORT HOOK AUTHENTICATION ANDA DI SINI
 // Contoh jika Anda menggunakan custom context:
-import { useAuth } from '../context/SettingContext';
+import { Link } from 'react-router-dom';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
