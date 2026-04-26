@@ -6,7 +6,7 @@ import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
 
 // Import Hook Auth Anda di sini (misalnya dari context atau Firebase)
-// import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/SettingContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +14,7 @@ export default function Navbar() {
   const { settings } = useSettings();
 
   // Ambil data user yang sedang login
-  // const { currentUser } = useAuth(); // Sesuaikan dengan hook Anda
+  const { currentUser } = useAuth(); // Sesuaikan dengan hook Anda
   
   // (HAPUS BARIS INI NANTI) Data dummy untuk testing
   const currentUser = { email: 'sdnegerikajulangko@gmail.com' }; 
@@ -22,7 +22,7 @@ export default function Navbar() {
   // --- MASUKKAN EMAIL ADMIN DI SINI ---
   const adminEmails = [
     'sdnegerikajulangko@gmail.com',
-    'firmanp55.admin@gmail.com' // Ubah jika format aslinya berbeda
+    'firmanp55@admin.sd.belajar.id' // Ubah jika format aslinya berbeda
   ];
 
   // Cek otorisasi admin
