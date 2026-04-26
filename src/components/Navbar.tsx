@@ -1,39 +1,55 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GraduationCap, Menu, X } from 'lucide-react';
-import { useState, useEffect } from 'react'; // Tambahkan useEffect
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
+
+// Import Hook Auth Anda di sini (misalnya dari context atau Firebase)
+// import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { settings } = useSettings();
 
+  // Ambil data user yang sedang login
+  // const { currentUser } = useAuth(); // Sesuaikan dengan hook Anda
+  
+  // (HAPUS BARIS INI NANTI) Data dummy untuk testing
+  const currentUser = { email: 'sdnegerikajulangko@gmail.com' }; 
+
+  // --- MASUKKAN EMAIL ADMIN DI SINI ---
+  const adminEmails = [
+    'sdnegerikajulangko@gmail.com',
+    'firmanp55.admin@gmail.com' // Ubah jika format aslinya berbeda
+  ];
+
+  // Cek otorisasi admin
+  const isAdmin = currentUser?.email && adminEmails.includes(currentUser.email);
+
   // Efek untuk mengubah Favicon secara dinamis
   useEffect(() => {
     if (settings?.logoSekolah) {
-      // Mencari elemen link icon (favicon)
       let favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement;
       
       if (!favicon) {
-        // Jika elemen tidak ada, buat baru
         favicon = document.createElement('link');
         favicon.rel = 'icon';
         document.head.appendChild(favicon);
       }
       
-      // Update URL favicon
       favicon.href = settings.logoSekolah;
     }
-  }, [settings?.logoSekolah]); // Berjalan setiap kali logoSekolah berubah
+  }, [settings?.logoSekolah]);
 
+  // Modifikasi menu berdasarkan status admin
   const links = [
     { name: 'Beranda', path: '/' },
     { name: 'Panduan', path: '/panduan' },
     { name: 'Pendaftaran', path: '/daftar' },
     { name: 'Cek Kelulusan', path: '/cek-kelulusan' },
-    { name: 'Admin', path: '/admin' },
+    ...(isAdmin ? [{ name: 'Admin', path: '/admin' }] : []),
   ];
 
   return (
