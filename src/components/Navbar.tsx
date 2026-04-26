@@ -4,27 +4,20 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '../lib/utils';
 import { useSettings } from '../context/SettingsContext';
-
-// Import Hook Auth Anda di sini (misalnya dari context atau Firebase)
 import { useAuth } from '../context/SettingContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { settings } = useSettings();
-
-  // Ambil data user yang sedang login
-  const { currentUser } = useAuth(); // Sesuaikan dengan hook Anda
-  
+  const { currentUser } = useAuth();
   const currentUser = { email: 'sdnegerikajulangko@gmail.com' }; 
-
   const adminEmails = [
     'sdnegerikajulangko@gmail.com',
     'firmanp55@admin.sd.belajar.id' // Ubah jika format aslinya berbeda
   ];
 
-  // Cek otorisasi admin
-  const isAdmin = currentUser?.email && adminEmails.includes(currentUser.email);
+   const isAdmin = currentUser?.email && adminEmails.includes(currentUser.email);
 
   // Efek untuk mengubah Favicon secara dinamis
   useEffect(() => {
