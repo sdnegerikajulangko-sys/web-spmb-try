@@ -16,10 +16,8 @@ export default function Navbar() {
   // Ambil data user yang sedang login
   const { currentUser } = useAuth(); // Sesuaikan dengan hook Anda
   
-  // (HAPUS BARIS INI NANTI) Data dummy untuk testing
   const currentUser = { email: 'sdnegerikajulangko@gmail.com' }; 
 
-  // --- MASUKKAN EMAIL ADMIN DI SINI ---
   const adminEmails = [
     'sdnegerikajulangko@gmail.com',
     'firmanp55@admin.sd.belajar.id' // Ubah jika format aslinya berbeda
